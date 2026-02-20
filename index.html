@@ -113,6 +113,70 @@
     /* Scroll indicator */
     .scroll-indicator { animation: float 2s infinite ease-in-out; }
 
+    /* Page Viewer Overlay */
+    #page-viewer {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #050510;
+      opacity: 0;
+      transform: translateY(100%);
+      transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      display: flex; flex-direction: column;
+    }
+    #page-viewer.open {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    #viewer-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background: rgba(10,10,22,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+      gap: 0.75rem;
+    }
+    #viewer-title-area { flex: 1; min-width: 0; }
+    #viewer-title { font-size: 0.875rem; font-weight: 500; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #viewer-url { font-size: 0.6875rem; color: rgba(147,197,253,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+    .viewer-btn {
+      display: inline-flex; align-items: center; gap: 0.375rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #93c5fd;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .viewer-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: #fff; }
+    .viewer-btn.close-btn { color: #f87171; }
+    .viewer-btn.close-btn:hover { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.3); }
+    #viewer-iframe {
+      flex: 1; width: 100%; border: none;
+      background: #fff;
+    }
+    #viewer-loading {
+      position: absolute; inset: 0; top: 60px;
+      display: flex; align-items: center; justify-content: center;
+      background: #050510;
+      z-index: 1;
+      transition: opacity 0.3s ease;
+    }
+    #viewer-loading.hidden { opacity: 0; pointer-events: none; }
+    .loader {
+      width: 32px; height: 32px;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-top-color: #60a5fa;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     /* Safe areas for notched devices */
     @supports (padding: env(safe-area-inset-top)) {
       .safe-top { padding-top: env(safe-area-inset-top); }
@@ -255,28 +319,28 @@
             Core Decks &amp; Analysis
           </h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <a href="https://pitch.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://pitch.luminousprosperity.ventures/','Pitch Deck')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <i data-lucide="presentation" class="w-4 h-4 text-blue-400"></i>
                 <h4 class="font-medium text-blue-100 text-sm">Pitch Deck</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">pitch.luminousprosperity.ventures</p>
             </a>
-            <a href="https://angelfunding.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://angelfunding.luminousprosperity.ventures/','Angel Funding')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <i data-lucide="heart-handshake" class="w-4 h-4 text-emerald-400"></i>
                 <h4 class="font-medium text-blue-100 text-sm">Angel Funding</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">angelfunding.luminousprosperity.ventures</p>
             </a>
-            <a href="https://globalmarketanalysis.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://globalmarketanalysis.luminousprosperity.ventures/','Global Market Analysis')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <i data-lucide="globe" class="w-4 h-4 text-indigo-400"></i>
                 <h4 class="font-medium text-blue-100 text-sm">Global Market Analysis</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">globalmarketanalysis.luminousprosperity.ventures</p>
             </a>
-            <a href="https://investment-partnership.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://investment-partnership.luminousprosperity.ventures/','Investment Partnership')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <i data-lucide="handshake" class="w-4 h-4 text-amber-400"></i>
                 <h4 class="font-medium text-blue-100 text-sm">Investment Partnership</h4>
@@ -293,56 +357,56 @@
             The Seven Chambers
           </h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <a href="https://chamberonepitch.tiiny.site/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://chamberonepitch.tiiny.site/','Chamber 1: Content')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <span class="w-5 h-5 rounded-full bg-gradient-to-br from-red-400 to-rose-600 flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">1</span>
                 <h4 class="font-medium text-blue-100 text-sm">Chamber 1: Content</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">chamberonepitch.tiiny.site</p>
             </a>
-            <a href="https://chamber-2.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://chamber-2.luminousprosperity.ventures/','Chamber 2: Community')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <span class="w-5 h-5 rounded-full bg-gradient-to-br from-orange-400 to-amber-600 flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">2</span>
                 <h4 class="font-medium text-blue-100 text-sm">Chamber 2: Community</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">chamber-2.luminousprosperity.ventures</p>
             </a>
-            <a href="https://chamber3.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://chamber3.luminousprosperity.ventures/','Chamber 3: Education')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <span class="w-5 h-5 rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">3</span>
                 <h4 class="font-medium text-blue-100 text-sm">Chamber 3: Education</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">chamber3.luminousprosperity.ventures</p>
             </a>
-            <a href="https://chamber-4.tiiny.site/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://chamber-4.tiiny.site/','Chamber 4: Professional')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <span class="w-5 h-5 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">4</span>
                 <h4 class="font-medium text-blue-100 text-sm">Chamber 4: Professional</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">chamber-4.tiiny.site</p>
             </a>
-            <a href="https://chamber-5.tiiny.site/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://chamber-5.tiiny.site/','Chamber 5: Corporate')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <span class="w-5 h-5 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">5</span>
                 <h4 class="font-medium text-blue-100 text-sm">Chamber 5: Corporate</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">chamber-5.tiiny.site</p>
             </a>
-            <a href="https://chamber-6.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://chamber-6.luminousprosperity.ventures/','Chamber 6: Global Platform')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <span class="w-5 h-5 rounded-full bg-gradient-to-br from-indigo-400 to-purple-600 flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">6</span>
                 <h4 class="font-medium text-blue-100 text-sm">Chamber 6: Global Platform</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">chamber-6.luminousprosperity.ventures</p>
             </a>
-            <a href="https://chamber-7.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://chamber-7.luminousprosperity.ventures/','Chamber 7: Civilization')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <span class="w-5 h-5 rounded-full bg-gradient-to-br from-violet-400 to-purple-700 flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">7</span>
                 <h4 class="font-medium text-blue-100 text-sm">Chamber 7: Civilization</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">chamber-7.luminousprosperity.ventures</p>
             </a>
-            <a href="https://7chambers.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://7chambers.luminousprosperity.ventures/','7 Chambers Overview')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <i data-lucide="layers" class="w-4 h-4 text-white/60"></i>
                 <h4 class="font-medium text-blue-100 text-sm">7 Chambers Overview</h4>
@@ -359,28 +423,28 @@
             Technology &amp; Platforms
           </h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <a href="https://dashboard.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://dashboard.luminousprosperity.ventures/','Main Dashboard')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <i data-lucide="layout-dashboard" class="w-4 h-4 text-blue-400"></i>
                 <h4 class="font-medium text-blue-100 text-sm">Main Dashboard</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">dashboard.luminousprosperity.ventures</p>
             </a>
-            <a href="https://theluminousdashboard.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://theluminousdashboard.luminousprosperity.ventures/','Dashboard Vision')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <i data-lucide="monitor" class="w-4 h-4 text-indigo-400"></i>
                 <h4 class="font-medium text-blue-100 text-sm">Dashboard Vision</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">theluminousdashboard.luminousprosperity.ventures</p>
             </a>
-            <a href="https://ai-consciousness-engine.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://ai-consciousness-engine.luminousprosperity.ventures/','AI Consciousness Engine')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <i data-lucide="brain" class="w-4 h-4 text-purple-400"></i>
                 <h4 class="font-medium text-blue-100 text-sm">AI Consciousness Engine</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">ai-consciousness-engine.luminousprosperity.ventures</p>
             </a>
-            <a href="https://aimappingengine.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://aimappingengine.luminousprosperity.ventures/','AI Mapping Engine')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <i data-lucide="map" class="w-4 h-4 text-teal-400"></i>
                 <h4 class="font-medium text-blue-100 text-sm">AI Mapping Engine</h4>
@@ -397,42 +461,42 @@
             Vision &amp; Framework
           </h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <a href="https://intellectualproperity.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://intellectualproperity.luminousprosperity.ventures/','Intellectual Property')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <i data-lucide="shield" class="w-4 h-4 text-amber-400"></i>
                 <h4 class="font-medium text-blue-100 text-sm">Intellectual Property</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">intellectualproperity.luminousprosperity.ventures</p>
             </a>
-            <a href="https://luminouslibrary.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://luminouslibrary.luminousprosperity.ventures/','Luminous Library')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <i data-lucide="book-open" class="w-4 h-4 text-blue-300"></i>
                 <h4 class="font-medium text-blue-100 text-sm">Luminous Library</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">luminouslibrary.luminousprosperity.ventures</p>
             </a>
-            <a href="https://ucme-peace.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://ucme-peace.luminousprosperity.ventures/','UCME Peace Initiative')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <i data-lucide="heart" class="w-4 h-4 text-pink-400"></i>
                 <h4 class="font-medium text-blue-100 text-sm">UCME Peace Initiative</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">ucme-peace.luminousprosperity.ventures</p>
             </a>
-            <a href="https://worldpeace.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://worldpeace.luminousprosperity.ventures/','World Peace Vision')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <i data-lucide="globe-2" class="w-4 h-4 text-emerald-300"></i>
                 <h4 class="font-medium text-blue-100 text-sm">World Peace Vision</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">worldpeace.luminousprosperity.ventures</p>
             </a>
-            <a href="https://revenuemultiplcationmathematics.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://revenuemultiplcationmathematics.luminousprosperity.ventures/','Revenue Multiplication Math')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <i data-lucide="calculator" class="w-4 h-4 text-green-400"></i>
                 <h4 class="font-medium text-blue-100 text-sm">Revenue Multiplication Math</h4>
               </div>
               <p class="text-xs text-blue-300/50 font-light">revenuemultiplcationmathematics.luminousprosperity.ventures</p>
             </a>
-            <a href="https://mathdeck.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="link-tile">
+            <a href="javascript:void(0)" onclick="openViewer('https://mathdeck.luminousprosperity.ventures/','Mathematics Deck')" class="link-tile">
               <div class="flex items-center gap-2 mb-1">
                 <i data-lucide="sigma" class="w-4 h-4 text-cyan-400"></i>
                 <h4 class="font-medium text-blue-100 text-sm">Mathematics Deck</h4>
@@ -456,7 +520,7 @@
             <div class="space-y-4">
 
               <!-- Internal Portal -->
-              <a href="https://internal.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="gateway-card">
+              <a href="javascript:void(0)" onclick="openViewer('https://internal.luminousprosperity.ventures/','Internal Portal')" class="gateway-card">
                 <div class="gradient-border bg-gradient-to-r from-blue-400 to-indigo-500"></div>
                 <div class="card-inner">
                   <div>
@@ -471,7 +535,7 @@
               </a>
 
               <!-- CEO Hire Brief -->
-              <a href="https://ceohire.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="gateway-card">
+              <a href="javascript:void(0)" onclick="openViewer('https://ceohire.luminousprosperity.ventures/','CEO Hire Brief')" class="gateway-card">
                 <div class="gradient-border bg-gradient-to-r from-emerald-400 to-teal-500"></div>
                 <div class="card-inner">
                   <div>
@@ -486,7 +550,7 @@
               </a>
 
               <!-- Haute Lumiere -->
-              <a href="https://hautelumiere.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="gateway-card">
+              <a href="javascript:void(0)" onclick="openViewer('https://hautelumiere.luminousprosperity.ventures/','Haute Lumiere')" class="gateway-card">
                 <div class="gradient-border bg-gradient-to-r from-amber-200 to-yellow-500"></div>
                 <div class="card-inner">
                   <div>
@@ -501,7 +565,7 @@
               </a>
 
               <!-- Main Website -->
-              <a href="https://www.luminousprosperity.ventures/" target="_blank" rel="noopener noreferrer" class="gateway-card">
+              <a href="javascript:void(0)" onclick="openViewer('https://www.luminousprosperity.ventures/','Main Website')" class="gateway-card">
                 <div class="gradient-border bg-gradient-to-r from-violet-400 to-purple-600"></div>
                 <div class="card-inner">
                   <div>
@@ -594,6 +658,25 @@
     </div>
   </main>
 
+  <!-- ===== Page Viewer Overlay ===== -->
+  <div id="page-viewer">
+    <div id="viewer-header">
+      <div id="viewer-title-area">
+        <div id="viewer-title">Loading...</div>
+        <div id="viewer-url"></div>
+      </div>
+      <button class="viewer-btn" onclick="openInNewTab()" title="Open in new tab">
+        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        <span class="hidden sm:inline">New Tab</span>
+      </button>
+      <button class="viewer-btn close-btn" onclick="closeViewer()" title="Close (Esc)">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+    <div id="viewer-loading"><div class="loader"></div></div>
+    <iframe id="viewer-iframe" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" loading="lazy"></iframe>
+  </div>
+
   <!-- ===== JavaScript ===== -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -635,6 +718,58 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 500);
     }
+
+    // --- Page Viewer ---
+    let currentViewerUrl = '';
+
+    function openViewer(url, title) {
+      currentViewerUrl = url;
+      const viewer = document.getElementById('page-viewer');
+      const iframe = document.getElementById('viewer-iframe');
+      const loading = document.getElementById('viewer-loading');
+
+      document.getElementById('viewer-title').textContent = title || 'Loading...';
+      document.getElementById('viewer-url').textContent = url;
+
+      loading.classList.remove('hidden');
+      iframe.src = url;
+      iframe.onload = () => loading.classList.add('hidden');
+
+      viewer.classList.add('open');
+      document.body.style.overflow = 'hidden';
+
+      history.pushState({ viewer: true }, '', '');
+      setTimeout(() => lucide.createIcons(), 100);
+    }
+
+    function closeViewer() {
+      const viewer = document.getElementById('page-viewer');
+      const iframe = document.getElementById('viewer-iframe');
+
+      viewer.classList.remove('open');
+      document.body.style.overflow = '';
+
+      setTimeout(() => {
+        iframe.src = 'about:blank';
+        currentViewerUrl = '';
+      }, 400);
+    }
+
+    function openInNewTab() {
+      if (currentViewerUrl) window.open(currentViewerUrl, '_blank');
+    }
+
+    // Escape key closes viewer
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeViewer();
+    });
+
+    // Browser back button closes viewer
+    window.addEventListener('popstate', (e) => {
+      if (document.getElementById('page-viewer').classList.contains('open')) {
+        closeViewer();
+      }
+    });
 
     // PWA Service Worker
     if ('serviceWorker' in navigator) {
